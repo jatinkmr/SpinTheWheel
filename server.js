@@ -1,20 +1,21 @@
-// const express = require('express');
-// const app = express();
-// const port = 3000;
+const express = require('express');
+const app = express();
+const port = 3000;
 
-// // Set up EJS as view engine
-// app.set('view engine', 'ejs');
-// app.set('views', './views');
+// Set up EJS as view engine
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
-// // Serve static files and parse JSON
-// app.use(express.static('public'));
-// app.use(express.json());
+// Serve static files and parse JSON
+app.use(express.static('public'));
+app.use(express.json());
 
-// // Route for home page
-// app.get('/', (req, res) => {
-//     res.render('index');
-// });
+// Route for home page
+app.get('/', (req, res) => {
+    res.render('index');
+});
 
+// without weightages all has same possibilities i.e., 1/6
 // // Route for spin result
 // app.post('/spin', (req, res) => {
 //     if (!req.body || typeof req.body.angle !== 'number') {
@@ -32,27 +33,6 @@
 //     console.log(`Angle: ${finalAngle.toFixed(2)} radians, Normalized: ${normalizedAngle.toFixed(2)}°, Original Angle: ${original_angle.toFixed(2)}°, Index: ${index}, Prize: ${prizes[index]}`);
 //     res.json({ prize: prizes[index] });
 // });
-
-// app.listen(port, () => {
-//     console.log(`Server running at ${port}`);
-// });
-
-const express = require('express');
-const app = express();
-const port = 3000;
-
-// Set up EJS as view engine
-app.set('view engine', 'ejs');
-app.set('views', './views');
-
-// Serve static files and parse JSON
-app.use(express.static('public'));
-app.use(express.json());
-
-// Route for home page
-app.get('/', (req, res) => {
-    res.render('index');
-});
 
 // Prizes and their weightages
 const prizes = ['Free Spin', '10 Points', '50 Points', '100 Points', 'Try Again', '500 Points'];
