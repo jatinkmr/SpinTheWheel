@@ -150,56 +150,53 @@ function drawWheel() {
     ctx.fill();
 }
 
-function spinWheel() {
+async function spinWheel() {
     if (isSpinning) return;
     isSpinning = true;
     spinBtn.disabled = true;
 
-    fetch('/spin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const { prize, index } = data;
-            const arc_deg = 360 / prizes.length; // 60 degrees
-            const target_pointer_angle = (index + 0.5) * arc_deg;
-            const normalizedAngle = (270 - target_pointer_angle + 360) % 360;
-            const N = Math.floor(Math.random() * 3) + 2; // 2 to 4 rotations
-            const spinAngle = normalizedAngle + N * 360;
-            const spinTime = Math.random() * 3000 + 2000; // 2-5 seconds
-            let currentTime = 0;
-
-            function animate() {
-                currentTime += 16;
-                const progress = currentTime / spinTime;
-                if (progress < 1) {
-                    const easeOut = 1 - Math.pow(1 - progress, 3);
-                    startAngle = (spinAngle * easeOut) * Math.PI / 180;
-                    drawWheel();
-                    requestAnimationFrame(animate);
-                } else {
-                    startAngle = (spinAngle * Math.PI / 180);
-                    drawWheel();
-                    isSpinning = false;
-                    spinBtn.disabled = false;
-                    resultDiv.innerHTML = `<p>You won: ${prize}</p>`;
-                }
-            }
-
-            requestAnimationFrame(animate);
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            isSpinning = false;
-            spinBtn.disabled = false;
-            resultDiv.innerHTML = '<p>Error getting prize</p>';
+    try {
+        const response = await fetch('/spin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
         });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        const { prize, index } = data;
+        const arc_deg = 360 / prizes.length; // 60 degrees
+        const target_pointer_angle = (index + 0.5) * arc_deg;
+        const normalizedAngle = (270 - target_pointer_angle + 360) % 360;
+        const N = Math.floor(Math.random() * 3) + 2; // 2 to 4 rotations
+        const spinAngle = normalizedAngle + N * 360;
+        const spinTime = Math.random() * 3000 + 2000; // 2-5 seconds
+        let currentTime = 0;
+
+        function animate() {
+            currentTime += 16;
+            const progress = currentTime / spinTime;
+            if (progress < 1) {
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                startAngle = (spinAngle * easeOut) * Math.PI / 180;
+                drawWheel();
+                requestAnimationFrame(animate);
+            } else {
+                startAngle = (spinAngle * Math.PI / 180);
+                drawWheel();
+                isSpinning = false;
+                spinBtn.disabled = false;
+                resultDiv.innerHTML = `<p>You won: ${prize}</p>`;
+            }
+        }
+
+        requestAnimationFrame(animate);
+    } catch (error) {
+        console.error('Fetch error:', error);
+        isSpinning = false;
+        spinBtn.disabled = false;
+        resultDiv.innerHTML = '<p>Error getting prize</p>';
+    }
 }
 
 drawWheel();
