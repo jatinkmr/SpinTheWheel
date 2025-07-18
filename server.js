@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 3001;
 
 // Set up EJS as view engine
 app.set('view engine', 'ejs');
@@ -64,5 +64,5 @@ app.post('/spin', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Spin the wheel app listening at http://localhost:${port}`);
 });
